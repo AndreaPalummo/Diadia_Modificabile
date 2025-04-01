@@ -1,10 +1,6 @@
 package it.unitoma3.diadia;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,21 +14,21 @@ class PartitaTest {
 	}
 
 	@Test
-	void test() {
+	void testVerificaFinePartita() {
 		assertFalse(this.partita.isFinita());
 		this.partita.setFinita();
 		assertTrue(this.partita.isFinita());
 	}
 
 	@Test
-	void test1() {
-		partita.setCfu(0);
+	void testVerificaCfu() {
+		partita.getGiocatore().setCfu(0);
 		assertFalse(this.partita.vinta());
 	}
 	
 	@Test
-	void test2() {
-		partita.setStanzaCorrente(partita.getStanzaVincente());
+	void testFinePartitaPerVittoria() {
+		partita.getLabirinto().setStanzaCorrente(partita.getLabirinto().getStanzaVincente());
 		assertTrue(this.partita.vinta());
 	}
 }

@@ -8,30 +8,45 @@ import org.junit.jupiter.api.Test;
 class StanzaTest {
 
 	private Stanza stanza;
-	private Attrezzo attrezzo;
+	private Stanza stanzaAdiacente;
+	private Attrezzo martello;
+	private Attrezzo cacciavite;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		this.stanza = new Stanza("Pippo");
-		this.attrezzo = new Attrezzo("spada", 200);
+		stanza = new Stanza("Pippo");
+		stanzaAdiacente = new Stanza("Pluto");
+		martello = new Attrezzo("martello", 5);
+		cacciavite = new Attrezzo("cacciavite", 2);
 	}
 
 	@Test
-	void testHasAttrezzoStanzaVuota() {
-		assertFalse(this.stanza.hasAttrezzo(this.attrezzo.getNome()));
+	void testUnaStanzaAdiacente() {
+		this.stanza.impostaStanzaAdiacente("sud", stanzaAdiacente);
+		assertEquals(stanzaAdiacente, stanza.getStanzaAdiacente("sud"));
 	}
 	
 	@Test
-	void testHasAttrezzo() {
-		this.stanza.addAttrezzo(attrezzo);
-		assertTrue(this.stanza.hasAttrezzo(this.attrezzo.getNome()));
+	void testStanzeAdiacentiVuote() {
+		assertNull(stanza.getStanzaAdiacente("nord"));
+		assertNull(stanza.getStanzaAdiacente("est"));
+		assertNull(stanza.getStanzaAdiacente("ovest"));
+		assertNull(stanza.getStanzaAdiacente("sud"));
 	}
-	
-	@Test
-	void testRemoveAttrezzo() {
-		assertFalse(this.stanza.removeAttrezzo(attrezzo));
-		this.stanza.addAttrezzo(attrezzo);
-		assertTrue(this.stanza.removeAttrezzo(attrezzo));
-	}
-
+	 
+	 @Test
+	 public void testAddAttrezzo() {
+		 assertTrue(stanza.addAttrezzo(martello));
+		 assertTrue(stanza.addAttrezzo(cacciavite));
+		 
+		 assertFalse(stanza.addAttrezzo(martello)); 
+	 }
+	 
+	 @Test
+	 public void testRemvoeAttrezzo() {
+		 assertTrue(stanza.addAttrezzo(martello));
+		 assertTrue(stanza.addAttrezzo(cacciavite));
+		 
+		 assertTrue(stanza.removeAttrezzo(cacciavite));
+	 }
 }
