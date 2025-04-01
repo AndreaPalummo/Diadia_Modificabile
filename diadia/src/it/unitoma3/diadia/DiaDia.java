@@ -1,5 +1,8 @@
 package it.unitoma3.diadia;
-import java.util.Scanner;
+//import java.util.Scanner;
+
+import it.unitoma3.diadia.ambienti.Stanza;
+import it.unitoma3.diadia.attrezzi.Attrezzo;
 
 public class DiaDia {
 
@@ -17,20 +20,23 @@ public class DiaDia {
 
 	private Partita partita;
 
+	private IOConsole io;
+
 	public DiaDia() {
 		this.partita = new Partita();
+		this.io = new IOConsole();
 	}
 
 	public void gioca() {
 		String istruzione; 
-		Scanner scannerDiLinee;
+		//Scanner scannerDiLinee;
 
-		System.out.println(MESSAGGIO_BENVENUTO);
+		io.mostraMessaggio(MESSAGGIO_BENVENUTO);
 
-		scannerDiLinee = new Scanner(System.in);		
+		//scannerDiLinee = new Scanner(System.in);		
 
 		do		
-			istruzione = scannerDiLinee.nextLine();
+			istruzione = io.leggiRiga();
 		while (!processaIstruzione(istruzione));
 	}   
 
@@ -57,14 +63,14 @@ public class DiaDia {
 			this.posa(comandoDaEseguire.getParametro());
 		
 		else
-			System.out.println("Comando sconosciuto");
+			io.mostraMessaggio("COMANDO INESISTENTE");
 
 		if(this.partita.isFinita()) {
 			if (this.partita.vinta()) {
-				System.out.println("Hai vinto!");
+				io.mostraMessaggio("Bravo, hai vinto!!");
 				return true;
 			} else if(this.partita.getGiocatore().getCfu() <= 0){
-				System.out.println("Hai finito i CFU!!");
+				io.mostraMessaggio("Peccato, hai finito i CFU!!");
 				return true;
 			}	
 		}
@@ -73,62 +79,78 @@ public class DiaDia {
 
 	//gli attrezzi posati vengono rimossi dalla borsa e aggiunti alla stanza
 	private void posa(String nomeAttrezzo) {
-		Scanner scanner = new Scanner(System.in);
+		if(nomeAttrezzo == null) {
+	        io.mostraMessaggio("Quale attrezzo vuoi posare?");
+	        return;
+	    }
 		
-		System.out.print("inserire il peso dell'oggetto: ");
-		int peso = scanner.nextInt();
-		
-		Attrezzo attrezzo = new Attrezzo(nomeAttrezzo, peso);
-		
-		if(this.partita.getGiocatore().getBorsa().hasAttrezzo(nomeAttrezzo) != false) {
-			this.partita.getGiocatore().getBorsa().removeAttrezzo(nomeAttrezzo);
-			System.out.println("Attrezzo " + nomeAttrezzo + " rimosso dalla borsa");
-		} else {
-			System.out.println("Attrezzo " + nomeAttrezzo + " non presente nella borsa");
-		}
-		
-		if(this.partita.getLabirinto().getStanzaCorrente().hasAttrezzo(nomeAttrezzo) == false) {
-			this.partita.getLabirinto().getStanzaCorrente().addAttrezzo(attrezzo);
-			System.out.println("Attrezzo " + nomeAttrezzo + " inserito nella stanza");
-		} else {
-			System.out.println("Attrezzo " + nomeAttrezzo + " già presente nella stanza");
-		}
-		
+	    if(this.partita.getGiocatore().getBorsa().hasAttrezzo(nomeAttrezzo)) {
+	        Attrezzo attrezzo = this.partita.getGiocatore().getBorsa().getAttrezzo(nomeAttrezzo);
+	        
+	        this.partita.getGiocatore().getBorsa().removeAttrezzo(nomeAttrezzo);
+	        io.mostraMessaggio("Attrezzo " + nomeAttrezzo + " rimosso dalla borsa");
+	        
+	        if(!this.partita.getLabirinto().getStanzaCorrente().hasAttrezzo(nomeAttrezzo)) {
+	            this.partita.getLabirinto().getStanzaCorrente().addAttrezzo(attrezzo);
+	            io.mostraMessaggio("Attrezzo " + nomeAttrezzo + " inserito nella stanza");
+	        } else {
+	            io.mostraMessaggio("Attrezzo " + nomeAttrezzo + " già presente nella stanza");
+	        }
+	    } else {
+	        io.mostraMessaggio("Attrezzo " + nomeAttrezzo + " non presente nella borsa");
+	    }
 	}
 
 	//gli attrezzi presi vengono rimossi dalla stanza e aggiunti alla borsa
 	private void prendi(String nomeAttrezzo) {
-		
+	    if(nomeAttrezzo == null) {
+	        io.mostraMessaggio("Quale attrezzo vuoi prendere?");
+	        return;
+	    }
+	    
+	    if(this.partita.getLabirinto().getStanzaCorrente().hasAttrezzo(nomeAttrezzo)) {
+	        Attrezzo attrezzo = this.partita.getLabirinto().getStanzaCorrente().getAttrezzo(nomeAttrezzo);
+	        
+	        if(this.partita.getGiocatore().getBorsa().addAttrezzo(attrezzo)) {
+	            this.partita.getLabirinto().getStanzaCorrente().removeAttrezzo(attrezzo);
+	            io.mostraMessaggio("Attrezzo " + nomeAttrezzo + " prelevato dalla stanza e aggiunto alla borsa");
+	        } else {
+	        	io.mostraMessaggio("Non c'è più spazio nella borsa per l'attrezzo " + nomeAttrezzo);
+	        }
+	    } else {
+	        io.mostraMessaggio("Attrezzo " + nomeAttrezzo + " non presente nella stanza");
+	    }
 	}
 
 	private void aiuto() {
 		for(int i=0; i< elencoComandi.length; i++) 
-			System.out.print(elencoComandi[i]+" ");
-		System.out.println();
+			io.mostraMessaggio(elencoComandi[i]+" ");
+		io.mostraMessaggio(" ");
 	}
 
 	private void vai(String direzione) {
 		if(direzione==null)
-			System.out.println("Dove vuoi andare ?");
+			io.mostraMessaggio("Dove vuoi andare ?");
 		Stanza prossimaStanza = null;
 		prossimaStanza = this.partita.getLabirinto().getStanzaCorrente().getStanzaAdiacente(direzione);
 		if (prossimaStanza == null) {
-			System.out.println("CFU rimanenti: " + this.partita.getGiocatore().getCfu());
-			System.out.println("Direzione inesistente");
+			io.mostraMessaggio("CFU rimanenti: " + this.partita.getGiocatore().getCfu());
+			io.mostraMessaggio("Direzione inesistente");
 		}else{
 			this.partita.getLabirinto().setStanzaCorrente(prossimaStanza);
 			this.partita.getGiocatore().decrementaCfu();
 		}
 
-		System.out.println(this.partita.getLabirinto().getStanzaCorrente().getDescrizione());
+		io.mostraMessaggio(this.partita.getLabirinto().getStanzaCorrente().getDescrizione());
 	}
 
 	private void fine() {
-		System.out.println("Grazie di aver giocato!");
+		io.mostraMessaggio("Grazie di aver giocato!");
 	}
 
 	public static void main(String[] argc) {
 		DiaDia gioco = new DiaDia();
 		gioco.gioca();
+		
 	}
 }

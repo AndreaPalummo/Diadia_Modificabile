@@ -1,13 +1,18 @@
 package it.unitoma3.diadia;
 
+import it.unitoma3.diadia.ambienti.Labirinto;
+import it.unitoma3.diadia.giocatore.Giocatore;
+
 public class Partita {
 
 	private boolean finita;
-	private Labirinto labirinto = new Labirinto();
-	private Giocatore giocatore = new Giocatore();
+	private Labirinto labirinto;
+	private Giocatore giocatore;
 	
 	public Partita(){
+		this.labirinto = new Labirinto();
 		this.labirinto.creaStanze();
+		this.giocatore = new Giocatore();
 		this.finita = false;
 	}
 

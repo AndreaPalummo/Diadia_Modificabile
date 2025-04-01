@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import it.unitoma3.diadia.attrezzi.Attrezzo;
+import it.unitoma3.diadia.giocatore.Borsa;
+
 class BorsaTest {
 
 	private Borsa borsa;

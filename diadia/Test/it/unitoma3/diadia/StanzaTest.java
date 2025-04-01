@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import it.unitoma3.diadia.ambienti.Stanza;
+import it.unitoma3.diadia.attrezzi.Attrezzo;
+
 class StanzaTest {
 
 	private Stanza stanza;
@@ -36,8 +39,8 @@ class StanzaTest {
 	 
 	 @Test
 	 public void testAddAttrezzo() {
-		 assertTrue(stanza.addAttrezzo(martello));
 		 assertTrue(stanza.addAttrezzo(cacciavite));
+		 assertTrue(stanza.addAttrezzo(martello));
 		 
 		 assertFalse(stanza.addAttrezzo(martello)); 
 	 }
